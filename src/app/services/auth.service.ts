@@ -1,44 +1,53 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
 
 @Injectable({
    providedIn: 'root'
 })
 export class AuthService {
-   private readonly USER_STORAGE_KEY = 'user';
-
-   private set _currentUser(u: User | undefined) {
-      if (u) {
-         window.localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(u));
-      } else {
-         window.localStorage.removeItem(this.USER_STORAGE_KEY);
+   private set _jwt(token: string | undefined) {
+      if (token) {
+         window.localStorage.setItem(environment.STORAGE_KEYS.JWT, token);
       }
+   }
+
+   private get _jwt(): string | undefined {
+      return window.localStorage.getItem(environment.STORAGE_KEYS.JWT) || undefined;
    }
 
    private get _currentUser(): User | undefined {
-      if (window.localStorage.getItem(this.USER_STORAGE_KEY) == null) return undefined;
-
-      return JSON.parse(window.localStorage.getItem(this.USER_STORAGE_KEY) as string);
+      if (this._jwt) {
+         return this.jwtHelperService.decodeToken(this._jwt);
+      } else return undefined;
    }
 
-   constructor() {
+   constructor(private httpClient: HttpClient, private jwtHelperService: JwtHelperService) {
    }
 
    login(email: string, password: string): Observable<boolean> {
-      if (email === 'abc@abc.com') {
-         this._currentUser = {
-            email: email
-         };
-      }
-      return of(email === 'abc@abc.com');
+      const body = { user: email, pass: password };
+
+      return this.httpClient.post(`${environment.api}/auth/login`, body, {
+         headers: {
+            'content-type': 'application/json',
+         },
+         responseType: 'text'
+      }).pipe(tap(res => this._jwt = res), map(res => !!res));
    }
 
    logout(): Observable<{}> {
-      this._currentUser = undefined;
+      this._jwt = undefined;
       return of({});
    }
 
+   isLoggedIn(): Observable<boolean> {
+      return of(!!this._jwt);
+   }
    currentUser(): Observable<User | undefined> {
       return of(this._currentUser);
    }

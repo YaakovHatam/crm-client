@@ -1,6 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Contact } from 'src/app/models/contact.model';
-import { AuthService } from 'src/app/services/auth.service';
+import { environment } from 'src/environments/environment';
 
 const ELEMENT_DATA: Contact[] = [
    { Contact_Owner: 6, First_Name: 'Aleeza', Last_Name: 'Richardson', Title: 'Agricultural and Food Science Technician', Date_Of_Birth: 'Wed Sep 20 1995 14:49:00 GMT+0200 (Israel Standard Time)', Phone: '02-1199233', Mobile: '050-9080209', Email: 'AleezaRichardson74@outlook.com', Skype_ID: 69244700, Street: 'Creek Road', City: 'Coral Springs', Country: 'France' },
@@ -114,10 +115,11 @@ export class ContactsComponent implements OnInit {
    displayedColumns: string[] = ['First_Name', 'Last_Name', 'Title', 'Date_Of_Birth'];
    dataSource = ELEMENT_DATA;
 
-   constructor(private authService: AuthService) {
+   constructor(private httpClient: HttpClient) {
    }
 
    ngOnInit(): void {
+      this.httpClient.get(`${environment.api}/api/v1/contact`).subscribe(res => console.log(res));
    }
 
 

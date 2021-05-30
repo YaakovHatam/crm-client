@@ -1,4 +1,6 @@
 <button mat-button>Above</button>
 <button mat-button>Below</button>
 <button mat-button>Before</button>
-<button *ngIf="authService.currentUser() | async" (click)='performLogout()' mat-button>Logout</button>
+<button *ngIf="authService.currentUser() | async" (click)='performLogout()' mat-button>
+   Logout ({{authService.currentUser() | async | json}})
+</button>
