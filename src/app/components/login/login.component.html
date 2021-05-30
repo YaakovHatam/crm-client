@@ -1,0 +1,13 @@
+<div class="example-form">
+   <mat-form-field class="example-full-width">
+      <mat-label>Email</mat-label>
+      <input #emailInput type="email" autocomplete="off" #email matInput placeholder="Ex. pat@example.com">
+   </mat-form-field>
+   <mat-form-field class="example-full-width">
+      <mat-label>Password</mat-label>
+      <input #passInput type="password" autocomplete="off" #email matInput
+         placeholder="your password abcde1234!@~#!@#$">
+   </mat-form-field>
+   <button (click)="login(emailInput, passInput)" mat-button>Login</button>
+   <span *ngIf="error">{{error}}</span>
+</div>
