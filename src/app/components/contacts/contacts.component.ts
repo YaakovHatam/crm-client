@@ -119,7 +119,7 @@ export class ContactsComponent implements OnInit {
    }
 
    ngOnInit(): void {
-      this.httpClient.get(`${environment.api}/api/v1/contact`).subscribe(res => console.log(res));
+      this.httpClient.get(`${environment.api}/api/v1/user`).subscribe(res => console.log(res));
    }
 
 
